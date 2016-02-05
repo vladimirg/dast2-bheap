@@ -68,10 +68,10 @@ public class Tester {
 		Collections.sort(sortedItems);
 		
 		assertHeapSanity(bheap, sortedItems.size(), sortedItems.get(0));
-		for (int i = sortedItems.size(); i > 0; i--) {
+		for (int i = sortedItems.size() - 1; i >= 0; i--) {
 			bheap.deleteMin();
 			sortedItems.remove(0);
-			assertHeapSanity(bheap, i, sortedItems.get(0));
+			assertHeapSanity(bheap, i, i == 0 ? Integer.MAX_VALUE : sortedItems.get(0));
 		}
 	}
 	
