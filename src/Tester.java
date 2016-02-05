@@ -9,7 +9,7 @@ public class Tester {
 	public static void main(String[] args)
 	{
 		BinomialHeap meldingHeap = new BinomialHeap();
-		assertHeapSanity(meldingHeap, 0, Integer.MIN_VALUE);
+		assertHeapSanity(meldingHeap, 0, Integer.MAX_VALUE);
 		List<Integer> meldedItems = new ArrayList<Integer>();
 		
 		for (Object testAsObject : Tester.allTests) {
@@ -34,7 +34,7 @@ public class Tester {
 	
 	private static BinomialHeap createTreeWithInserts(List<Integer> items) {
 		BinomialHeap result = new BinomialHeap();
-		int min = Integer.MIN_VALUE;
+		int min = Integer.MAX_VALUE;
 		
 		assertHeapSanity(result, 0, min);
 		for (int i = 0; i < items.size(); i++) {
@@ -49,7 +49,7 @@ public class Tester {
 	
 	private static BinomialHeap createTreeWithArray(List<Integer> items) {
 		BinomialHeap result = new BinomialHeap();
-		assertHeapSanity(result, 0, Integer.MIN_VALUE);
+		assertHeapSanity(result, 0, Integer.MAX_VALUE);
 		
 		int[] itemsToAdd = new int[items.size()];
 		for (int i = 0; i < itemsToAdd.length; i++) {
