@@ -8,7 +8,7 @@
 public class BinomialHeap {
 
 	private int size;
-	private BTList roots;
+	private BTList roots = new BTList();
 	
 	
 	/**
@@ -234,6 +234,10 @@ public class BinomialHeap {
     }
     
     private boolean isValid(BinomialTree item) {
+    	if (item == null) {
+    		return true;
+    	}
+    	
     	if (item.children.length() == 0) {
     		return true;
     	}
