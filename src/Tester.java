@@ -118,12 +118,16 @@ public class Tester {
 	
 	
 	
-	private static List<Integer> orderedTest = listFromArray(new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
-	private static List<Integer> reversedTest = listFromArray(new int[] {9, 8, 7, 6, 5, 4, 3, 2, 1, 0});
-	private static List<Integer> shuffledTest = listFromArray(new int[] {5, 3, 2, 0, 4, 7, 1, 9, 8, 6});
-	private static List<Integer> shuffledWithReps = listFromArray(new int[] {4, 8, 5, 4, 0, 9, 9, 7, 8, 0, 7, 2, 2, 6, 1, 1, 6, 3, 3, 5});
-	private static List<Integer> bigTestWithReps = listFromArray(new int[] {
-			387, 129, 486, 361, 337, 427, 51, 3, 197, 23, 162, 367, 187, 335, 290, 451,
+	private static List<Integer> orderedTest = listFromArray(new int[]
+			{0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+	private static List<Integer> reversedTest = listFromArray(new int[]
+			{9, 8, 7, 6, 5, 4, 3, 2, 1, 0});
+	private static List<Integer> shuffledTest = listFromArray(new int[]
+			{5, 3, 2, 0, 4, 7, 1, 9, 8, 6});
+	private static List<Integer> shuffledWithReps = listFromArray(new int[]
+			{4, 8, 5, 4, 0, 9, 9, 7, 8, 0, 7, 2, 2, 6, 1, 1, 6, 3, 3, 5});
+	private static List<Integer> bigTestWithReps = listFromArray(new int[]
+			{387, 129, 486, 361, 337, 427, 51, 3, 197, 23, 162, 367, 187, 335, 290, 451,
 			70, 309, 42, 212, 297, 192, 366, 189, 418, 142, 385, 118, 263, 83, 491, 240,
 			255, 190, 109, 357, 36, 415, 167, 400, 7, 433, 477, 289, 43, 181, 414, 69,
 			10, 227, 247, 230, 210, 475, 212, 419, 451, 486, 128, 457, 339, 443, 100, 370,
@@ -187,5 +191,6 @@ public class Tester {
 			33, 389, 158, 125, 6, 294, 492, 150, 66, 248, 268, 320, 402, 325, 489, 423,
 			243, 373, 55, 88, 228, 93, 232, 126
 	});
-	private static Object[] allTests = new Object[] {orderedTest, reversedTest, shuffledTest, shuffledWithReps, bigTestWithReps};
+	private static Object[] allTests = new Object[]
+			{orderedTest, reversedTest, shuffledTest, shuffledWithReps, bigTestWithReps};
 }

@@ -21,7 +21,7 @@ public class BinomialHeap {
 	 */
 	private static class BinomialTree {
 		
-		private int degree;
+		private int rank;
 		private int value;
 		private BTList children;
 		private BinomialTree parent;
@@ -46,7 +46,7 @@ public class BinomialHeap {
 		
 		private BinomialTree link(BinomialTree upper, BinomialTree lower) {
 			upper.children.add(lower);
-			upper.degree++;
+			upper.rank++;
 			lower.parent = upper;
 			upper.parent = null;
 			
@@ -81,7 +81,7 @@ public class BinomialHeap {
     }
 
     private void insert(BinomialTree item) {
-    	int i = item.degree;
+    	int i = item.rank;
     	
     	do {
     		if (roots.get(i) == null) {
@@ -103,7 +103,7 @@ public class BinomialHeap {
     */
     public void deleteMin() {
     	BinomialTree min = this.findMinTree();
-    	this.roots.remove(min.degree);;
+    	this.roots.remove(min.rank);;
     	this.size--;
     	
     	for (int i = 0; i < min.children.length(); i++) {
@@ -133,13 +133,15 @@ public class BinomialHeap {
     }
     
     private BinomialTree findMinTree() {
+    	
     	if (this.empty()) {
     		return null;
     	}
-    	BinomialTree min = this.roots.get(0);
+    	BinomialTree min = this.roots.get(this.minTreeRank());
     	
-    	for (int i = 0; i < this.roots.length(); i++) {
+    	for (int i = min.rank + 1; i < this.roots.length(); i++) {
     		BinomialTree root = this.roots.get(i);
+    		
     		if (root != null) {
     			if (root.value < min.value) {
     				min = root;
@@ -181,12 +183,19 @@ public class BinomialHeap {
     * 
     */
     public int minTreeRank() {
-        for (int i = 0; i < this.roots.length(); i++) {
-        	if (this.roots.get(i) == null) {
-        		return i;
-        	}
-        }
-        return -1;
+    	
+    	if (this.empty()) {
+    		return -1;
+    	}
+    	
+    	BinomialTree min = this.roots.get(0);
+    	for (int i = 0; i < this.roots.length();) {
+    		if (min != null) {
+    			break;
+    		}
+			min = this.roots.get(++i);
+    	}
+    	return min.rank;
     }
 	
 	   /**
@@ -259,8 +268,7 @@ public class BinomialHeap {
 		private static final int INITIAL_LENGTH = 16;
 		// the factor by which to increase the array once its full
 		private static final int INCREASE_FACTOR = 2;
-		// the factor by which to decrease the array once its only a quarter full
-		private static final int DECREASE_FACTOR = 4;
+
 		
 		private BinomialTree[] storageArray;
 		// Most Significant Bit + 1
@@ -275,9 +283,8 @@ public class BinomialHeap {
 		// worst case - O(n), amortized - O(1)
 		public void add(BinomialTree item) {
 			
-			if ((this.size == this.storageArray.length) ||
-					(this.storageArray.length <= item.degree)) {
-				int sizeFactor = Math.max(this.storageArray.length, item.degree);
+			if ((this.storageArray.length < 2*this.size) || (this.storageArray.length <= item.rank)) {
+				int sizeFactor = Math.max(this.storageArray.length, item.rank);
 				BinomialTree[] increasedArray = new BinomialTree[sizeFactor * BTList.INCREASE_FACTOR];
 				
 				for (int i = 0; i < this.size; i++) {
@@ -286,10 +293,10 @@ public class BinomialHeap {
 				
 				this.storageArray = increasedArray;
 			}
+			this.storageArray[item.rank] = item;
 			
-			this.storageArray[item.degree] = item;
-			if (this.size <= item.degree) {
-				this.size = item.degree + 1;
+			if (this.size <= item.rank) {
+				this.size = item.rank + 1;
 			}
 		}
 
@@ -304,17 +311,6 @@ public class BinomialHeap {
 						break;
 					}
 				}
-			}
-
-			if (this.size <= this.storageArray.length / BTList.DECREASE_FACTOR) {
-				BinomialTree[] decreasedArray =
-						new BinomialTree[this.storageArray.length / BTList.DECREASE_FACTOR];
-				
-				for (int i = 0; i < this.size; i++) {
-					decreasedArray[i] = this.storageArray[i];
-				}
-				
-				this.storageArray = decreasedArray;
 			}
 		}
 		
