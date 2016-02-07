@@ -84,12 +84,12 @@ public class BinomialHeap {
     	int i = item.rank;
     	
     	do {
-    		if (roots.get(i) == null) {
-    			roots.add(item);
+    		if (this.roots.get(i) == null) {
+    			this.roots.add(item);
     			break;
     		} else {
-    			item = item.link(roots.get(i));
-    			roots.remove(i++);;
+    			item = item.link(this.roots.get(i));
+    			this.roots.remove(i++);;
     		}
     	}
     	while (true);
@@ -238,12 +238,12 @@ public class BinomialHeap {
     	boolean isValid = true;
     	
     	for (int i = 0; i < this.roots.length(); i++) {
-    		isValid = isValid && isValid(this.roots.get(i));
+    		isValid = isValid && BinomialHeap.isValid(this.roots.get(i));
     	}
     	return isValid;
     }
     
-    private boolean isValid(BinomialTree item) {
+    private static boolean isValid(BinomialTree item) {
     	if (item == null) {
     		return true;
     	}
@@ -254,7 +254,7 @@ public class BinomialHeap {
     	boolean isValid = true;
     	
     	for (int i = 0; i < item.children.length(); i++) {
-    		isValid = isValid && isValid(item.children.get(i));
+    		isValid = isValid && BinomialHeap.isValid(item.children.get(i));
     	}
     	return isValid;
     }
