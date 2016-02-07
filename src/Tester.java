@@ -53,7 +53,7 @@ public class Tester {
 		
 		int[] itemsToAdd = new int[items.size()];
 		for (int i = 0; i < itemsToAdd.length; i++) {
-			itemsToAdd[i] = items.get(0);
+			itemsToAdd[i] = items.get(i);
 		}
 		
 		result.arrayToHeap(itemsToAdd);
