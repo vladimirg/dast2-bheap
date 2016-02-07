@@ -38,13 +38,13 @@ public class BinomialHeap {
 		 */
 		public BinomialTree link(BinomialTree other) {
 			if (this.value <= other.value) {
-				return link(this, other);
+				return BinomialTree.link(this, other);
 			} else {
-				return link(other, this);
+				return BinomialTree.link(other, this);
 			}
 		}
 		
-		private BinomialTree link(BinomialTree upper, BinomialTree lower) {
+		private static BinomialTree link(BinomialTree upper, BinomialTree lower) {
 			upper.children.add(lower);
 			upper.rank++;
 			lower.parent = upper;
@@ -103,7 +103,7 @@ public class BinomialHeap {
     */
     public void deleteMin() {
     	BinomialTree min = this.findMinTree();
-    	this.roots.remove(min.rank);;
+    	this.roots.remove(min.rank);
     	this.size--;
     	
     	for (int i = 0; i < min.children.length(); i++) {
@@ -158,10 +158,11 @@ public class BinomialHeap {
     *
     */
     public void meld (BinomialHeap other) {
+    	BinomialHeap safeOther = other;
     	
-    	for (int i = 0; i < other.roots.length(); i++) {
-    		if (other.roots.get(i) != null) {
-    			this.insert(other.roots.get(i));
+    	for (int i = 0; i < safeOther.roots.length(); i++) {
+    		if (safeOther.roots.get(i) != null) {
+    			this.insert(safeOther.roots.get(i));
     		}
     	}
     }
@@ -187,13 +188,13 @@ public class BinomialHeap {
     	if (this.empty()) {
     		return -1;
     	}
-    	
     	BinomialTree min = this.roots.get(0);
-    	for (int i = 0; i < this.roots.length();) {
+    	
+    	for (int i = 0; i < this.roots.length(); i++) {
+			min = this.roots.get(i);
     		if (min != null) {
     			break;
     		}
-			min = this.roots.get(++i);
     	}
     	return min.rank;
     }
@@ -303,13 +304,12 @@ public class BinomialHeap {
 		public void remove(int index) {
 			this.storageArray[index] = null;
 			
-			if (this.size - 1 == index) {
+			if (index == this.size - 1) {
 				for (int i = index; i >= 0; i--) {
-					if (this.storageArray[i] == null) {
-						this.size--;
-					} else {
+					if (this.storageArray[i] != null) {
 						break;
 					}
+					this.size--;
 				}
 			}
 		}
