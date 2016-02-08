@@ -158,9 +158,8 @@ public class BinomialHeap {
     }
 
     private void deleteAll() {
-    	for (int i = 0; i < this.size; i++) {
-    		this.deleteMin();
-    	}
+    	this.size = 0;
+    	this.roots = new BTList();
     }
     
     /**
