@@ -43,14 +43,40 @@ public class BinomialHeap {
 		}
 		
 		private static BinomialTree link(BinomialTree upper, BinomialTree lower) {
-			BinomialTree safeUpper = upper;
-			BinomialTree safeLower = lower;
+			upper.children.add(lower);
+			upper.rank++;
 			
-			safeUpper.children.add(safeLower);
-			safeUpper.rank++;
-			
-			return safeUpper;
+			return upper;
 		}
+		
+	    public static BinomialTree safeTree(BinomialTree myTree) {
+			
+			BinomialTree resultedTree = new BinomialTree(myTree.value);
+			resultedTree.rank = myTree.rank;
+			resultedTree.children = new BTList();
+			
+			for (int i = 0; i < myTree.children.length(); i++) {
+				resultedTree.children.add(BinomialTree.safeTree(myTree.children.get(i)));
+			}
+			return resultedTree;
+	    }
+	        
+	    public static boolean isValid(BinomialTree item) {
+	    	if (item == null) {
+	    		return true;
+	    	}
+	    	
+	    	if (item.children.length() == 0) {
+	    		return true;
+	    	}
+	    	boolean isValid = true;
+	    	
+	    	for (int i = 0; i < item.children.length(); i++) {
+	    		BinomialTree child = item.children.get(i);
+	    		isValid = isValid && BinomialTree.isValid(child) && item.value <= child.value;
+	    	}
+	    	return isValid;
+	    }
 		
 	}
 	
@@ -160,15 +186,28 @@ public class BinomialHeap {
     *
     */
     public void meld (BinomialHeap other) {
-    	BinomialHeap safeOther = other;
-    	this.size += safeOther.size;
-    	
+    	BinomialHeap safeOther = BinomialHeap.safeHeap(other);
+
     	for (int i = 0; i < safeOther.roots.length(); i++) {
     		this.insert(safeOther.roots.get(i));
     	}
-    	
+    	this.size += other.size;
     }
-
+    
+    private static BinomialHeap safeHeap(BinomialHeap myHeap) {
+    	BinomialHeap resultedHeap = new BinomialHeap();
+    	resultedHeap.roots = new BTList();
+    	
+    	for (int i = 0; i < myHeap.roots.length(); i++) {
+    		BinomialTree myTree = myHeap.roots.get(i);
+    		
+    		if (myTree != null) {
+    			BinomialTree.safeTree(myTree);	
+    		}
+    	}
+    	return resultedHeap;
+    }
+    
    /**
     * public int size()
     *
@@ -240,23 +279,11 @@ public class BinomialHeap {
     	boolean isValid = true;
     	
     	for (int i = 0; i < this.roots.length(); i++) {
-    		isValid = isValid && BinomialHeap.isValid(this.roots.get(i));
-    	}
-    	return isValid;
-    }
-    
-    private static boolean isValid(BinomialTree item) {
-    	if (item == null) {
-    		return true;
-    	}
-    	
-    	if (item.children.length() == 0) {
-    		return true;
-    	}
-    	boolean isValid = true;
-    	
-    	for (int i = 0; i < item.children.length(); i++) {
-    		isValid = isValid && BinomialHeap.isValid(item.children.get(i));
+    		BinomialTree root = this.roots.get(i);
+    		
+    		if (root != null) {
+    			isValid = isValid && BinomialTree.isValid(root) && root.rank == i;
+    		}
     	}
     	return isValid;
     }
