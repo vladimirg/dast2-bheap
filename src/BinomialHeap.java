@@ -50,10 +50,13 @@ public class BinomialHeap {
 		}
 		
 	    public static BinomialTree safeTree(BinomialTree myTree) {
+	    	
+	    	if (myTree == null) {
+	    		return null;
+	    	}
 			
 			BinomialTree resultedTree = new BinomialTree(myTree.value);
 			resultedTree.rank = myTree.rank;
-			resultedTree.children = new BTList();
 			
 			for (int i = 0; i < myTree.children.length(); i++) {
 				resultedTree.children.add(BinomialTree.safeTree(myTree.children.get(i)));
@@ -109,14 +112,13 @@ public class BinomialHeap {
     	
     	if (item != null) {
         	int i = item.rank;
-        	BinomialTree safeItem = item; 
         	
         	do {
         		if (this.roots.get(i) == null) {
-        			this.roots.add(safeItem);
+        			this.roots.add(item);
         			break;
         		}
-        		safeItem = safeItem.link(this.roots.get(i));
+        		item = item.link(this.roots.get(i));
     			this.roots.remove(i++);
         	}
         	while (true);
@@ -130,16 +132,20 @@ public class BinomialHeap {
     *
     */
     public void deleteMin() {
-    	BinomialTree min = this.findMinTree();
-    	this.roots.remove(min.rank);
-    	this.size--;
     	
-    	for (int i = 0; i < min.children.length(); i++) {
-    		this.insert(min.children.get(i));
+    	if (!this.empty()) {
+        	
+        	BinomialTree min = this.findMinTree();
+        	this.roots.remove(min.rank);
+        	this.size--;
+        	
+        	for (int i = 0; i < min.children.length(); i++) {
+        		this.insert(min.children.get(i));
+        	}
     	}
     }
 
-    public void deleteAll() {
+    private void deleteAll() {
     	for (int i = 0; i < this.size; i++) {
     		this.deleteMin();
     	}
@@ -152,12 +158,11 @@ public class BinomialHeap {
     *
     */
     public int findMin() {
-    	BinomialTree min = this.findMinTree();
     	
-    	if (min == null) {
+    	if (this.empty()) {
     		return -1;
     	}
-    	return min.value;
+    	return this.findMinTree().value;
     }
     
     private BinomialTree findMinTree() {
@@ -187,23 +192,19 @@ public class BinomialHeap {
     */
     public void meld (BinomialHeap other) {
     	BinomialHeap safeOther = BinomialHeap.safeHeap(other);
+    	this.size += safeOther.size;
 
     	for (int i = 0; i < safeOther.roots.length(); i++) {
     		this.insert(safeOther.roots.get(i));
     	}
-    	this.size += other.size;
     }
     
     private static BinomialHeap safeHeap(BinomialHeap myHeap) {
     	BinomialHeap resultedHeap = new BinomialHeap();
-    	resultedHeap.roots = new BTList();
+    	resultedHeap.size = myHeap.size;
     	
     	for (int i = 0; i < myHeap.roots.length(); i++) {
-    		BinomialTree myTree = myHeap.roots.get(i);
-    		
-    		if (myTree != null) {
-    			BinomialTree.safeTree(myTree);	
-    		}
+    		resultedHeap.roots.add(BinomialTree.safeTree(myHeap.roots.get(i)));	
     	}
     	return resultedHeap;
     }
@@ -312,20 +313,23 @@ public class BinomialHeap {
 		// worst case - O(n), amortized - O(1)
 		public void add(BinomialTree item) {
 			
-			if ((this.storageArray.length < 2*this.size) || (this.storageArray.length <= item.rank)) {
-				int sizeFactor = Math.max(this.storageArray.length, item.rank);
-				BinomialTree[] increasedArray = new BinomialTree[sizeFactor * BTList.INCREASE_FACTOR];
+			if (item != null) {
 				
-				for (int i = 0; i < this.size; i++) {
-					increasedArray[i] = this.storageArray[i];
+				if ((this.storageArray.length < 2*this.size) || (this.storageArray.length <= item.rank)) {
+					int sizeFactor = Math.max(this.storageArray.length, item.rank);
+					BinomialTree[] increasedArray = new BinomialTree[sizeFactor * BTList.INCREASE_FACTOR];
+					
+					for (int i = 0; i < this.size; i++) {
+						increasedArray[i] = this.storageArray[i];
+					}
+					
+					this.storageArray = increasedArray;
 				}
+				this.storageArray[item.rank] = item;
 				
-				this.storageArray = increasedArray;
-			}
-			this.storageArray[item.rank] = item;
-			
-			if (this.size <= item.rank) {
-				this.size = item.rank + 1;
+				if (this.size <= item.rank) {
+					this.size = item.rank + 1;
+				}
 			}
 		}
 
