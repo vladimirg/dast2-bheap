@@ -49,6 +49,10 @@ public class BinomialHeap {
 			return upper;
 		}
 		
+		/**
+		 * @return deep copy of myTree
+		 * 
+		 */
 	    public static BinomialTree safeTree(BinomialTree myTree) {
 	    	
 	    	if (myTree == null) {
@@ -64,6 +68,10 @@ public class BinomialHeap {
 			return resultedTree;
 	    }
 	        
+	    /**
+	     * @return true iff for every node in the tree (item): parent value <= child value
+	     * 
+	     */
 	    public static boolean isValid(BinomialTree item) {
 	    	if (item == null) {
 	    		return true;
@@ -84,30 +92,34 @@ public class BinomialHeap {
 	}
 	
 	
-   /**
-    * public boolean empty()
-    *
-    * precondition: none
-    * 
-    * The method returns true if and only if the heap
-    * is empty.
-    *   
-    */
+	/**
+     * public boolean empty()
+     *
+     * precondition: none
+     * 
+     * The method returns true if and only if the heap
+     * is empty.
+     *   
+     */
     public boolean empty() {
     	return this.size == 0;
     }
 		
-   /**
-    * public void insert(int value)
-    *
-    * Insert value into the heap 
-    *
-    */
+    /**
+     * public void insert(int value)
+     *
+     * Insert value into the heap 
+     *
+     */
     public void insert(int value) {   
     	this.insert(new BinomialTree(value));
     	this.size++;
     }
 
+    /**
+     * Insert whole tree into the heap
+     * 
+     */
     private void insert(BinomialTree item) {
     	
     	if (item != null) {
@@ -125,12 +137,12 @@ public class BinomialHeap {
     	}
     }
     
-   /**
-    * public void deleteMin()
-    *
-    * Delete the minimum value
-    *
-    */
+    /**
+     * public void deleteMin()
+     *
+     * Delete the minimum value
+     *
+     */
     public void deleteMin() {
     	
     	if (!this.empty()) {
@@ -151,12 +163,12 @@ public class BinomialHeap {
     	}
     }
     
-   /**
-    * public int findMin()
-    *
-    * Return the minimum value
-    *
-    */
+    /**
+     * public int findMin()
+     *
+     * Return the minimum value
+     *
+     */
     public int findMin() {
     	
     	if (this.empty()) {
@@ -165,6 +177,10 @@ public class BinomialHeap {
     	return this.findMinTree().value;
     }
     
+    /**
+     * @return the tree with the minimum 
+     * 
+     */
     private BinomialTree findMinTree() {
     	
     	if (this.empty()) {
@@ -184,13 +200,13 @@ public class BinomialHeap {
     	return min;
     }
     
-   /**
-    * public void meld (BinomialHeap heap2)
-    *
-    * Meld the heap with heap2
-    *
-    */
-    public void meld (BinomialHeap other) {
+    /**
+     * public void meld (BinomialHeap heap2)
+     *
+     * Meld the heap with heap2
+     *
+     */
+    public void meld(BinomialHeap other) {
     	BinomialHeap safeOther = BinomialHeap.safeHeap(other);
     	this.size += safeOther.size;
 
@@ -199,6 +215,10 @@ public class BinomialHeap {
     	}
     }
     
+	/**
+	 * @return deep copy of myHeap
+	 * 
+	 */
     private static BinomialHeap safeHeap(BinomialHeap myHeap) {
     	BinomialHeap resultedHeap = new BinomialHeap();
     	resultedHeap.size = myHeap.size;
@@ -209,22 +229,22 @@ public class BinomialHeap {
     	return resultedHeap;
     }
     
-   /**
-    * public int size()
-    *
-    * Return the number of elements in the heap
-    *   
-    */
+    /**
+     * public int size()
+     *
+     * Return the number of elements in the heap
+     *   
+     */
     public int size() {
     	return this.size;
      }
     
-   /**
-    * public int minTreeRank()
-    *
-    * Return the minimum rank of a tree in the heap.
-    * 
-    */
+    /**
+     * public int minTreeRank()
+     *
+     * Return the minimum rank of a tree in the heap.
+     * 
+     */
     public int minTreeRank() {
     	
     	if (this.empty()) {
@@ -235,18 +255,18 @@ public class BinomialHeap {
     	for (int i = 0; i < this.roots.length(); i++) {
 			min = this.roots.get(i);
     		if (min != null) {
-    	    	return min.rank;
+    	    	break;
     		}
     	}
     	return min.rank;
     }
 	
-	   /**
-    * public boolean[] binaryRep()
-    *
-    * Return an array containing the binary representation of the heap.
-    * 
-    */
+    /**
+     * public boolean[] binaryRep()
+     *
+     * Return an array containing the binary representation of the heap.
+     * 
+     */
     public boolean[] binaryRep() {
 		boolean[] arr = new boolean[this.roots.length()];
 		
@@ -256,12 +276,12 @@ public class BinomialHeap {
         return arr;
     }
 
-   /**
-    * public void arrayToHeap()
-    *
-    * Insert the array to the heap. Delete previous elements in the heap.
-    * 
-    */
+    /**
+     * public void arrayToHeap()
+     *
+     * Insert the array to the heap. Delete previous elements in the heap.
+     * 
+     */
     public void arrayToHeap(int[] array) {
     	this.deleteAll();
     	
@@ -270,12 +290,12 @@ public class BinomialHeap {
         }
     }
 	
-   /**
-    * public boolean isValid()
-    *
-    * Returns true if and only if the heap is valid.
-    *   
-    */
+    /**
+     * public boolean isValid()
+     *
+     * Returns true if and only if the heap is valid.
+     *   
+     */
     public boolean isValid() {
     	boolean isValid = true;
     	
@@ -333,6 +353,7 @@ public class BinomialHeap {
 			}
 		}
 
+		// removes an item from the list
 		public void remove(int index) {
 			this.storageArray[index] = null;
 			
