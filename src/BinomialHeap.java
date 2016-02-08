@@ -23,9 +23,7 @@ public class BinomialHeap {
 		
 		private int rank;
 		private int value;
-		private BTList children;
-		private BinomialTree parent;
-		
+		private BTList children;		
 		
 		public BinomialTree(int value) {
 			this.value = value;
@@ -45,12 +43,13 @@ public class BinomialHeap {
 		}
 		
 		private static BinomialTree link(BinomialTree upper, BinomialTree lower) {
-			upper.children.add(lower);
-			upper.rank++;
-			lower.parent = upper;
-			upper.parent = null;
+			BinomialTree safeUpper = upper;
+			BinomialTree safeLower = lower;
 			
-			return upper;
+			safeUpper.children.add(safeLower);
+			safeUpper.rank++;
+			
+			return safeUpper;
 		}
 		
 	}
@@ -81,18 +80,21 @@ public class BinomialHeap {
     }
 
     private void insert(BinomialTree item) {
-    	int i = item.rank;
     	
-    	do {
-    		if (this.roots.get(i) == null) {
-    			this.roots.add(item);
-    			break;
-    		} else {
-    			item = item.link(this.roots.get(i));
-    			this.roots.remove(i++);;
-    		}
+    	if (item != null) {
+        	int i = item.rank;
+        	BinomialTree safeItem = item; 
+        	
+        	do {
+        		if (this.roots.get(i) == null) {
+        			this.roots.add(safeItem);
+        			break;
+        		}
+        		safeItem = safeItem.link(this.roots.get(i));
+    			this.roots.remove(i++);
+        	}
+        	while (true);
     	}
-    	while (true);
     }
     
    /**
@@ -159,12 +161,12 @@ public class BinomialHeap {
     */
     public void meld (BinomialHeap other) {
     	BinomialHeap safeOther = other;
+    	this.size += safeOther.size;
     	
     	for (int i = 0; i < safeOther.roots.length(); i++) {
-    		if (safeOther.roots.get(i) != null) {
-    			this.insert(safeOther.roots.get(i));
-    		}
+    		this.insert(safeOther.roots.get(i));
     	}
+    	
     }
 
    /**
@@ -193,7 +195,7 @@ public class BinomialHeap {
     	for (int i = 0; i < this.roots.length(); i++) {
 			min = this.roots.get(i);
     		if (min != null) {
-    			break;
+    	    	return min.rank;
     		}
     	}
     	return min.rank;
@@ -269,7 +271,6 @@ public class BinomialHeap {
 		private static final int INITIAL_LENGTH = 16;
 		// the factor by which to increase the array once its full
 		private static final int INCREASE_FACTOR = 2;
-
 		
 		private BinomialTree[] storageArray;
 		// Most Significant Bit + 1
