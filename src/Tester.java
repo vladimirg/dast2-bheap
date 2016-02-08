@@ -38,7 +38,7 @@ public class Tester {
 		
 		assertHeapSanity(result, 0, min);
 		for (int i = 0; i < items.size(); i++) {
-			int itemToAdd = items.indexOf(i);
+			int itemToAdd = items.get(i);
 			min = Math.min(min, itemToAdd);
 			result.insert(itemToAdd);
 			assertHeapSanity(result, i+1, min);
