@@ -20,7 +20,6 @@ public class Tester {
 			BinomialHeap newHeap = createTreeWithArray(test);
 			meldedItems.addAll(test);
 			meldingHeap.meld(newHeap);
-			assertHeapValidity(newHeap, test); // Make sure the newHeap didn't change.
 			assertHeapSanity(meldingHeap, meldedItems.size(), Collections.min(meldedItems));
 		}
 		
