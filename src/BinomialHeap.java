@@ -9,7 +9,8 @@ public class BinomialHeap {
 
 	private int size;
 	private BTList roots = new BTList();
-	private int minTreeIndex;
+	private int minValueTreeRank;
+	private int minTreeRank;
 	
 	
 	/**
@@ -115,22 +116,13 @@ public class BinomialHeap {
     public void insert(int value) {
     	this.size++;
     	
-    	/*
-    	 * When inserting a new value, we want to keep track of the tree
-    	 * that holds the minimum value. Because in this insert we always
-    	 * start with rank 0, we can conclude that if the final "resting" rank
-    	 * of the inserted value is bigger than the rank of the previous
-    	 * minimum, then the new minimum must be at the this new "resting"
-    	 * rank - the actual value doesn't matter. If the final resting rank
-    	 * is smaller than the currently stored rank, then we can compare
-    	 * values to determine the new minimum. Just this logic is O(1).
-    	 */
     	int insertedTreeRank = this.insert(new BinomialTree(value));
-    	if (insertedTreeRank > this.minTreeIndex) {
-    		this.minTreeIndex = insertedTreeRank;
+    	this.minTreeRank = insertedTreeRank;
+    	if (insertedTreeRank > this.minValueTreeRank) {
+    		this.minValueTreeRank = insertedTreeRank;
     	}
-    	else if (this.roots.get(insertedTreeRank).value <= this.roots.get(this.minTreeIndex).value) {
-    		this.minTreeIndex = insertedTreeRank;
+    	else if (this.roots.get(insertedTreeRank).value <= this.roots.get(this.minValueTreeRank).value) {
+    		this.minValueTreeRank = insertedTreeRank;
     	}
     }
 
@@ -169,7 +161,7 @@ public class BinomialHeap {
     	
     	if (!this.empty()) {
         	
-        	BinomialTree min = this.roots.get(this.minTreeIndex);
+        	BinomialTree min = this.roots.get(this.minValueTreeRank);
         	this.roots.remove(min.rank);
         	this.size--;
         	
@@ -177,7 +169,8 @@ public class BinomialHeap {
         		this.insert(min.children.get(i));
         	}
         	
-        	this.updateMinTree();
+        	this.updateMinTreeRank();
+        	this.updateMinValueTreeRank();
     	}
     }
 
@@ -197,31 +190,45 @@ public class BinomialHeap {
     	if (this.empty()) {
     		return -1;
     	}
-    	return this.roots.get(this.minTreeIndex).value;
+    	return this.roots.get(this.minValueTreeRank).value;
     }
     
     /**
      * @return the tree with the minimum 
      * 
      */
-    private void updateMinTree() {
+    private void updateMinValueTreeRank() {
     	
     	if (this.empty()) {
-    		this.minTreeIndex = -1;
+    		this.minValueTreeRank = -1;
     		return;
     	}
     	
     	int startingRank = this.minTreeRank();
-    	this.minTreeIndex = startingRank;
+    	this.minValueTreeRank = startingRank;
     	int currentMin = this.roots.get(startingRank).value; 
     	
     	for (int i = startingRank; i < this.roots.length(); i++) {
     		BinomialTree root = this.roots.get(i);
     		
     		if (root != null && root.value < currentMin) {
-    			this.minTreeIndex = root.rank;
+    			this.minValueTreeRank = root.rank;
     			currentMin = root.value;
     		}
+    	}
+    }
+    
+    private void updateMinTreeRank() {
+    	this.minTreeRank = -1;
+    	
+    	if (!this.empty()) {
+	    	for (int i = 0; i < this.roots.length(); i++) {
+				BinomialTree min = this.roots.get(i);
+	    		if (min != null) {
+	    			this.minTreeRank = min.rank;
+	    	    	break;
+	    		}
+	    	}
     	}
     }
     
@@ -238,7 +245,8 @@ public class BinomialHeap {
     		this.insert(other.roots.get(i));
     	}
     	
-    	this.updateMinTree();
+    	this.updateMinTreeRank();
+    	this.updateMinValueTreeRank();
     }
     
 	/**
@@ -273,18 +281,7 @@ public class BinomialHeap {
      */
     public int minTreeRank() {
     	
-    	if (this.empty()) {
-    		return -1;
-    	}
-    	BinomialTree min = this.roots.get(0);
-    	
-    	for (int i = 0; i < this.roots.length(); i++) {
-			min = this.roots.get(i);
-    		if (min != null) {
-    	    	break;
-    		}
-    	}
-    	return min.rank;
+    	return this.minTreeRank;
     }
 	
     /**
