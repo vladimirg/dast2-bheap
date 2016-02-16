@@ -111,17 +111,18 @@ public class BinomialHeap {
      * Insert value into the heap 
      *
      */
-    public void insert(int value) {   
-    	this.insert(new BinomialTree(value));
+    public int insert(int value) {   
     	this.size++;
+    	return this.insert(new BinomialTree(value));
     }
 
     /**
      * Insert whole tree into the heap
      * 
      */
-    private void insert(BinomialTree item) {
+    private int insert(BinomialTree item) {
     	
+    	int linkingOperations = 0;
     	if (item != null) {
         	int i = item.rank;
         	
@@ -131,10 +132,13 @@ public class BinomialHeap {
         			break;
         		}
         		item = item.link(this.roots.get(i));
+        		linkingOperations++;
     			this.roots.remove(i++);
         	}
         	while (true);
     	}
+    	
+    	return linkingOperations;
     }
     
     /**
