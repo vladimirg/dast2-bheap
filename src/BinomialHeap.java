@@ -2,28 +2,24 @@
 /**
  * BinomialHeap
  *
- * An implementation of binomial heap over non-negative integers.
- * Based on exercise from previous semester.
+ * An implementation of a binomial heap over non-negative integers.
  */
 public class BinomialHeap {
 
+	// The number of values stored in the heap:
 	private int size;
-	private BTList roots = new BTList();
+	// A list of of the binomial trees making us the heap:
+	private BTList roots = new BTList();  
+	// The rank of the tree holding the minimum value:
 	private int minValueTreeRank;
+	// The rank of the smallest tree:
 	private int minTreeRank;
 	
 	
-	/**
-	 * public class HeapNode
-	 * 
-	 * If you wish to implement classes other than BinomialHeap
-	 * (for example HeapNode), do it in this file, not in 
-	 * another file 
-	 *  
-	 */
 	private static class BinomialTree {
 		
 		private int rank;
+		// The value stored at the root of the tree:
 		private int value;
 		private BTList children;		
 		
@@ -33,8 +29,10 @@ public class BinomialHeap {
 		}
 		
 		/**
-		 * @pre this.degree == other.degree
+		 * Link two binomial trees while keeping the heap rule, and return the
+		 * root of the resulting tree.
 		 * 
+		 * O(1)
 		 */
 		public BinomialTree link(BinomialTree other) {
 			if (this.value <= other.value) {
@@ -44,6 +42,11 @@ public class BinomialHeap {
 			}
 		}
 		
+		/** 
+		 * Link two binomial trees together, regardless of the heap rule.
+		 * 
+		 * O(1)
+		 */
 		private static BinomialTree link(BinomialTree upper, BinomialTree lower) {
 			upper.children.add(lower);
 			upper.rank++;
@@ -54,6 +57,7 @@ public class BinomialHeap {
 		/**
 		 * @return deep copy of myTree
 		 * 
+		 * O(n) 
 		 */
 	    public static BinomialTree safeTree(BinomialTree myTree) {
 	    	
@@ -73,6 +77,7 @@ public class BinomialHeap {
 	    /**
 	     * @return true iff for every node in the tree (item): parent value <= child value
 	     * 
+	     * O(n)
 	     */
 	    public static boolean isValid(BinomialTree item) {
 	    	if (item == null) {
@@ -95,28 +100,39 @@ public class BinomialHeap {
 	
 	
 	/**
-     * public boolean empty()
-     *
      * precondition: none
      * 
      * The method returns true if and only if the heap
      * is empty.
      *   
+     * O(1)
      */
     public boolean empty() {
     	return this.size == 0;
     }
 		
     /**
-     * public void insert(int value)
-     *
      * Insert value into the heap 
      *
+     * O(1) amortized, O(log n) worst case.
      */
     public void insert(int value) {
     	this.size++;
     	
     	int insertedTreeRank = this.insert(new BinomialTree(value));
+    	
+    	/*
+    	 * Because we attempt to insert the new value at position 0 (always),
+    	 * the final "resting" position of the value can be used for two things:
+    	 * 1) It is necessarily the rank of the smallest tree.
+    	 * 2) It is possibly the rank of the tree holding the minimum value:
+    	 *   a) If it overshot the previous minValue rank, then it must be the
+    	 *      the new minValue rank, whatever the new value is.
+    	 *   b) If its rank is smaller, we have to compare the two values.
+    	 * 
+    	 * These updates can be done in O(1)!
+    	 */
+    	
     	this.minTreeRank = insertedTreeRank;
     	if (insertedTreeRank > this.minValueTreeRank) {
     		this.minValueTreeRank = insertedTreeRank;
@@ -127,8 +143,9 @@ public class BinomialHeap {
     }
 
     /**
-     * Insert whole tree into the heap
+     * Insert a binomial tree into the heap.
      * 
+     * O(log n)
      */
     private int insert(BinomialTree item) {
     	
@@ -152,10 +169,9 @@ public class BinomialHeap {
     }
     
     /**
-     * public void deleteMin()
+     * Delete the minimum value.
      *
-     * Delete the minimum value
-     *
+     * O(log n)
      */
     public void deleteMin() {
     	
@@ -174,16 +190,20 @@ public class BinomialHeap {
     	}
     }
 
+    /**
+     * Empty the heap completely.
+     * 
+     * O(1)
+     */
     private void deleteAll() {
     	this.size = 0;
     	this.roots = new BTList();
     }
     
     /**
-     * public int findMin()
+     * Return the minimum value.
      *
-     * Return the minimum value
-     *
+     * O(1)
      */
     public int findMin() {
     	
@@ -194,8 +214,9 @@ public class BinomialHeap {
     }
     
     /**
-     * @return the tree with the minimum 
+     * Find the tree that holds the minimum value, and update the relevant field.
      * 
+     * O(log n)
      */
     private void updateMinValueTreeRank() {
     	
@@ -204,11 +225,11 @@ public class BinomialHeap {
     		return;
     	}
     	
-    	int startingRank = this.minTreeRank();
+    	int startingRank = this.minTreeRank(); // We could start at 0, but this is slightly better.
     	this.minValueTreeRank = startingRank;
     	int currentMin = this.roots.get(startingRank).value; 
     	
-    	for (int i = startingRank; i < this.roots.length(); i++) {
+    	for (int i = startingRank + 1; i < this.roots.length(); i++) {
     		BinomialTree root = this.roots.get(i);
     		
     		if (root != null && root.value < currentMin) {
@@ -218,6 +239,11 @@ public class BinomialHeap {
     	}
     }
     
+    /**
+     * Find the smallest tree in the heap, and update the relevant field.
+     * 
+     * O(log n)
+     */
     private void updateMinTreeRank() {
     	this.minTreeRank = -1;
     	
@@ -233,10 +259,9 @@ public class BinomialHeap {
     }
     
     /**
-     * public void meld (BinomialHeap heap2)
-     *
-     * Meld the heap with heap2
-     *
+     * Meld the heap with heap2. It is assumed that heap2 will not be used further.
+     * 
+     * O(log n)
      */
     public void meld(BinomialHeap other) {
     	this.size += other.size;
@@ -252,6 +277,7 @@ public class BinomialHeap {
 	/**
 	 * @return deep copy of myHeap
 	 * 
+	 * O(n)
 	 */
     private static BinomialHeap safeHeap(BinomialHeap myHeap) {
     	BinomialHeap resultedHeap = new BinomialHeap();
@@ -264,20 +290,18 @@ public class BinomialHeap {
     }
     
     /**
-     * public int size()
-     *
-     * Return the number of elements in the heap
-     *   
+     * Return the number of elements in the heap.
+     * 
+     * O(1)  
      */
     public int size() {
     	return this.size;
      }
     
     /**
-     * public int minTreeRank()
-     *
      * Return the minimum rank of a tree in the heap.
      * 
+     * O(1)
      */
     public int minTreeRank() {
     	
@@ -285,10 +309,9 @@ public class BinomialHeap {
     }
 	
     /**
-     * public boolean[] binaryRep()
-     *
      * Return an array containing the binary representation of the heap.
      * 
+     * O(log n)
      */
     public boolean[] binaryRep() {
 		boolean[] arr = new boolean[this.roots.length()];
@@ -300,10 +323,9 @@ public class BinomialHeap {
     }
 
     /**
-     * public void arrayToHeap()
-     *
      * Insert the array to the heap. Delete previous elements in the heap.
      * 
+     * O(n)
      */
     public void arrayToHeap(int[] array) {
     	this.deleteAll();
@@ -314,10 +336,9 @@ public class BinomialHeap {
     }
 	
     /**
-     * public boolean isValid()
-     *
      * Returns true if and only if the heap is valid.
-     *   
+     * 
+     * O(n)
      */
     public boolean isValid() {
     	boolean isValid = true;
@@ -376,7 +397,8 @@ public class BinomialHeap {
 			}
 		}
 
-		// removes an item from the list
+		// removes an item from the list, updates the size as necessary.
+		// O(n)
 		public void remove(int index) {
 			this.storageArray[index] = null;
 			
